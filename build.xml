@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="" default="all">
-
+<property name="extension.pkg" value="com.mahrusali.multifoto" />
   <property name="Extensions.dir" location="out" />
   <property name="AndroidRuntime-classes.dir" location="build/classes"/>
   <property name="ExternalComponent.dir" location="build/externalComponents" />

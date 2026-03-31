@@ -2,8 +2,8 @@ name: Build MultiFoto AIX
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch: # Supaya bisa dijalankan manual
+    branches: [ main, master ] # Menjaga jika branch kamu namanya 'master' bukan 'main'
+  workflow_dispatch: 
 
 jobs:
   build:
@@ -20,7 +20,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Build Extension with Ant
-      run: ant extensions
+      run: ant extensions # Sesuai dengan target 'extensions' di build.xml kamu
 
     - name: Upload AIX Result
       uses: actions/upload-artifact@v3

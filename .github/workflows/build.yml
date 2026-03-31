@@ -11,10 +11,12 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v4 # Update ke v4
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive # PENTING: Untuk menarik isi folder lib/appinventor
 
     - name: Set up JDK 8
-      uses: actions/setup-java@v4 # Update ke v4
+      uses: actions/setup-java@v4
       with:
         java-version: '8'
         distribution: 'temurin'
@@ -23,7 +25,7 @@ jobs:
       run: ant extensions
 
     - name: Upload AIX Result
-      uses: actions/upload-artifact@v4 # INI PERBAIKANNYA (Update ke v4)
+      uses: actions/upload-artifact@v4
       with:
         name: MultiFoto-Extension
         path: out/*.aix

@@ -28,16 +28,30 @@ public class MultiFoto extends AndroidNonvisibleComponent implements ActivityRes
         this.activity = container.$context();
     }
 
-    @SimpleFunction(description = "Buka galeri untuk memilih banyak foto sekaligus")
+   @SimpleFunction(description = "Buka galeri untuk memilih banyak foto sekaligus")
     public void PilihBanyakFoto() {
         if (requestCode == 0) {
             requestCode = form.registerForActivityResult(this);
         }
         
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        // Menggunakan ACTION_PICK seringkali lebih langsung membuka aplikasi Gallery/Photos
+        Intent intent = new Intent(Intent.ACTION_PICK); 
+        
+        // Pastikan hanya menampilkan gambar
         intent.setType("image/*");
+        
+        // Mendukung pemilihan banyak file
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true); 
-        activity.startActivityForResult(Intent.createChooser(intent, "Pilih Foto"), requestCode);
+        
+        try {
+            activity.startActivityForResult(intent, requestCode);
+        } catch (Exception e) {
+            // Fallback jika ACTION_PICK bermasalah pada device tertentu
+            Intent fallbackIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            fallbackIntent.setType("image/*");
+            fallbackIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            activity.startActivityForResult(Intent.createChooser(fallbackIntent, "Pilih Foto"), requestCode);
+        }
     }
 
     @Override

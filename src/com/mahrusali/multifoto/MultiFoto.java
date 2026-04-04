@@ -28,29 +28,31 @@ public class MultiFoto extends AndroidNonvisibleComponent implements ActivityRes
         this.activity = container.$context();
     }
 
-   @SimpleFunction(description = "Buka galeri untuk memilih banyak foto sekaligus")
+  @SimpleFunction(description = "Buka galeri untuk memilih banyak foto sekaligus dengan kompatibilitas tinggi")
     public void PilihBanyakFoto() {
         if (requestCode == 0) {
             requestCode = form.registerForActivityResult(this);
         }
         
-        // Menggunakan ACTION_PICK seringkali lebih langsung membuka aplikasi Gallery/Photos
-        Intent intent = new Intent(Intent.ACTION_PICK); 
-        
-        // Pastikan hanya menampilkan gambar
+        // Menggunakan ACTION_OPEN_DOCUMENT lebih stabil untuk memilih banyak file di Android baru
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
         
-        // Mendukung pemilihan banyak file
+        // Wajib untuk pemilihan banyak foto
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true); 
         
+        // Memberikan akses baca permanen (opsional, tapi bagus untuk stabilitas)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
         try {
             activity.startActivityForResult(intent, requestCode);
         } catch (Exception e) {
-            // Fallback jika ACTION_PICK bermasalah pada device tertentu
-            Intent fallbackIntent = new Intent(Intent.ACTION_GET_CONTENT);
-            fallbackIntent.setType("image/*");
-            fallbackIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-            activity.startActivityForResult(Intent.createChooser(fallbackIntent, "Pilih Foto"), requestCode);
+            // Jika perangkat lama tidak mendukung OPEN_DOCUMENT, gunakan fallback ke GET_CONTENT
+            Intent fallback = new Intent(Intent.ACTION_GET_CONTENT);
+            fallback.setType("image/*");
+            fallback.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            activity.startActivityForResult(Intent.createChooser(fallback, "Pilih Foto"), requestCode);
         }
     }
 
